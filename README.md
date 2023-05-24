@@ -140,6 +140,9 @@ The included frontend provides a user-friendly interface for testing and interac
 
 The frontend is designed to streamline the testing and interaction process, allowing you to easily manipulate the library's data using an intuitive graphical interface.
 
+## Presentation
+For more detailed information about this project, please refer to the [SOA Project Presentation](https://tinyurl.com/SOA-Project).
+
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests for any enhancements or bug fixes.
