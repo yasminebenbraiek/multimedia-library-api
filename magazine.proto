@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package magazine;
+
+message Magazine {
+  int32 id = 1;
+  string title = 2;
+  string category = 3;
+  string summary = 4;
+  string issue = 5;
+  string publisher = 6;
+  string language = 7;
+}
+
+message GetMagazineRequest {
+  int32 magazine_id = 1;
+}
+
+message GetMagazineResponse {
+  Magazine magazine = 1;
+}
+
+message GetAllMagazinesRequest {
+  string query = 1;
+}
+
+message GetAllMagazinesResponse {
+  repeated Magazine magazines = 1;
+}
+
+message CreateMagazineRequest {
+  int32 magazine_id = 1;
+  string title = 2;
+  string category = 3;
+  string summary = 4;
+  string issue = 5;
+  string publisher = 6;
+  string language = 7;
+}
+
+message CreateMagazineResponse {
+  Magazine magazine = 1;
+}
+
+message UpdateMagazineRequest {
+  int32 magazine_id = 1;
+  string title = 2;
+  string category = 3;
+  string summary = 4;
+  string issue = 5;
+  string publisher = 6;
+  string language = 7;
+}
+
+message UpdateMagazineResponse {
+  Magazine magazine = 1;
+}
+
+message DeleteMagazineRequest {
+  int32 magazine_id = 1;
+}
+
+message DeleteMagazineResponse {
+  int32 magazine_id = 1;
+}
+
+service MagazineService {
+  rpc GetMagazine(GetMagazineRequest) returns (GetMagazineResponse);
+  rpc GetAllMagazines(GetAllMagazinesRequest) returns (GetAllMagazinesResponse);
+  rpc CreateMagazine(CreateMagazineRequest) returns (CreateMagazineResponse);
+  rpc UpdateMagazine(UpdateMagazineRequest) returns (UpdateMagazineResponse);
+  rpc DeleteMagazine(DeleteMagazineRequest) returns (DeleteMagazineResponse);
+}

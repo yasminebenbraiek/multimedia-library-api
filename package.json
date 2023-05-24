@@ -1,0 +1,21 @@
+{
+  "name": "multimedia_library",
+  "version": "1.0.0",
+  "description": "A Mini project A mini project carried out as part of the Service-Oriented Architecture course.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yasmine Ben Braiek",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.7.1",
+    "@grpc/grpc-js": "^1.8.14",
+    "@grpc/proto-loader": "^0.7.7",
+    "apollo-server-express": "^3.12.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6"
+  }
+}

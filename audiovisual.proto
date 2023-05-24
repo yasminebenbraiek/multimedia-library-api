@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package audiovisual;
+
+message Audiovisual {
+  int32 id = 1;
+  string title = 2;
+  string format = 3;
+  string content = 4;
+  string production = 5;
+  string language = 6;
+}
+
+message GetAudiovisualRequest {
+  int32 audiovisual_id = 1;
+}
+
+message GetAudiovisualResponse {
+  Audiovisual audiovisual = 1;
+}
+
+message GetAllAudiovisualsRequest {
+  string query = 1;
+}
+
+message GetAllAudiovisualsResponse {
+  repeated Audiovisual audiovisuals = 1;
+}
+
+message CreateAudiovisualRequest {
+  int32 audiovisual_id = 1;
+  string title = 2;
+  string format = 3;
+  string content = 4;
+  string production = 5;
+  string language = 6;
+}
+
+message CreateAudiovisualResponse {
+  Audiovisual  audiovisual = 1;
+}
+
+message UpdateAudiovisualRequest {
+  int32 audiovisual_id = 1;
+  string title = 2;
+  string format = 3;
+  string content = 4;
+  string production = 5;
+  string language = 6;
+}
+
+message UpdateAudiovisualResponse {
+  Audiovisual audiovisual = 1;
+}
+
+message DeleteAudiovisualRequest {
+  int32 audiovisual_id = 1;
+}
+
+message DeleteAudiovisualResponse {
+  int32 audiovisual_id = 1;
+}
+
+service AudiovisualService {
+  rpc GetAudiovisual(GetAudiovisualRequest) returns (GetAudiovisualResponse);
+  rpc GetAllAudiovisuals(GetAllAudiovisualsRequest) returns (GetAllAudiovisualsResponse);
+  rpc CreateAudiovisual(CreateAudiovisualRequest) returns (CreateAudiovisualResponse);
+  rpc UpdateAudiovisual(UpdateAudiovisualRequest) returns (UpdateAudiovisualResponse);
+  rpc DeleteAudiovisual(DeleteAudiovisualRequest) returns (DeleteAudiovisualResponse);
+}

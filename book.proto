@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package book;
+
+message Book {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  string description = 4;
+  string language = 5;
+  string publisher = 6;
+}
+
+message GetBookRequest {
+  int32 book_id = 1;
+}
+
+message GetBookResponse {
+  Book book = 1;
+}
+
+message GetAllBooksRequest {
+   string query = 1;
+}
+
+message GetAllBooksResponse {
+  repeated Book books = 1;
+}
+
+message CreateBookRequest {
+  int32 book_id = 1;
+  string title = 2;
+  string author = 3;
+  string description = 4;
+  string language = 5;
+  string publisher = 6;
+}
+
+message CreateBookResponse {
+  Book book = 1;
+}
+
+message UpdateBookRequest {
+  int32 book_id = 1;
+  string title = 2;
+  string author = 3;
+  string description = 4;
+  string language = 5;
+  string publisher = 6;
+}
+
+message UpdateBookResponse {
+  Book book = 1;
+}
+
+message DeleteBookRequest {
+  int32 book_id = 1;
+}
+
+message DeleteBookResponse {
+  int32 book_id = 1;
+}
+
+service BookService {
+  rpc GetBook(GetBookRequest) returns (GetBookResponse);
+  rpc GetAllBooks(GetAllBooksRequest) returns (GetAllBooksResponse);
+  rpc CreateBook(CreateBookRequest) returns (CreateBookResponse);
+  rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse);
+  rpc DeleteBook(DeleteBookRequest) returns (DeleteBookResponse);
+}
