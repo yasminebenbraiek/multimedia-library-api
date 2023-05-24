@@ -14,22 +14,22 @@ This project implements a Multimedia Library API architecture using Node.js. The
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/multimedia-library-api.git`
+1. Clone the repository: `git clone https://github.com/YasmineBenBraiek/multimedia-library-api.git`
 2. Navigate to the project directory: `cd multimedia-library-api`
 3. Install dependencies: `npm install`
 
 ## Usage
 
 1. Start the microservices:
-   - Book microservice: `npm run start:book`
-   - Magazine microservice: `npm run start:magazine`
-   - Audiovisual microservice: `npm run start:audiovisual`
+   - Book microservice: `node bookMicroservice.js`
+   - Magazine microservice: `node magazineMicroservice.js`
+   - Audiovisual microservice: `node audiovisualMicroservice.js`
 
-2. Start the API Gateway: `npm run start:gateway`
+2. Start the API Gateway: `node apiGateway.js`
 
 3. Access the API and frontend:
    - API Gateway endpoint: `http://localhost:3000`
-   - Frontend: `http://localhost:3000/frontend`
+   - Frontend: `http://127.0.0.1:5500/Frontend/` via VS Code Live Server.
 
 ## Microservices and Data Management
 
@@ -71,7 +71,7 @@ The project uses an SQLite3 database to store data for all three microservices. 
 
 ### GraphQL Endpoint
 
-- Endpoint: `http://localhost:3000/graphql`
+- Endpoint: `http://localhost:3000`
 - Use GraphQL queries and mutations to interact with the library data.
 
 GraphQL Schema Description:
