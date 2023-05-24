@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audiovisual Microservice - Update Audiovisual</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <a class="navbar-brand" href="#">Multimedia Library</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="book.html">Books</a>
+        <a class="nav-item nav-link" href="magazine.html">Magazines</a>
+        <a class="nav-item nav-link" href="audiovisual.html">Audiovisuals</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h1 class="mb-4">Update Audiovisual</h1>
+
+    <!-- Update Audiovisual Form -->
+    <form id="updateAudiovisualForm">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" required>
+      </div>
+      <div class="form-group">
+        <label for="format">Format</label>
+        <input type="text" class="form-control" id="format" required>
+      </div>
+      <div class="form-group">
+        <label for="content">Content</label>
+        <textarea class="form-control" id="content" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="production">Production</label>
+        <input type="text" class="form-control" id="production">
+      </div>
+      <div class="form-group">
+        <label for="language">Language</label>
+        <input type="text" class="form-control" id="language">
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+
+    <hr>
+
+    <footer class="mt-5 text-center">
+      <p>&copy; 2023 SOA Project, by Yasmine Ben Braiek. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Fetch the audiovisual data and populate the update form
+    window.addEventListener('DOMContentLoaded', async () => {
+      const audiovisualId = getAudiovisualIdFromURL();
+      if (audiovisualId) {
+        const audiovisual = await fetchAudiovisual(audiovisualId);
+        if (audiovisual) {
+          populateUpdateForm(audiovisual);
+        } else {
+          alert('Audiovisual not found');
+          navigateToAudiovisualList();
+        }
+      } else {
+        alert('Invalid audiovisual ID');
+        navigateToAudiovisualList();
+      }
+    });
+
+    // Update Audiovisual form submit event
+    document.getElementById('updateAudiovisualForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const audiovisualId = getAudiovisualIdFromURL();
+      const updatedAudiovisual = getUpdatedAudiovisualData();
+      if (audiovisualId && updatedAudiovisual) {
+        await updateAudiovisual(audiovisualId, updatedAudiovisual);
+        navigateToAudiovisualList();
+      } else {
+        alert('Failed to update audiovisual');
+        navigateToAudiovisualList();
+      }
+    });
+
+    // Get the audiovisual ID from the URL query parameter
+    function getAudiovisualIdFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('id');
+    }
+
+    // Fetch the audiovisual data from the REST API
+    async function fetchAudiovisual(id) {
+      try {
+        const response = await axios.get(`http://localhost:3000/audiovisuals/${id}`);
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+
+    // Populate the update form with audiovisual data
+    function populateUpdateForm(audiovisual) {
+      document.getElementById('title').value = audiovisual.title;
+      document.getElementById('format').value = audiovisual.format;
+      document.getElementById('content').value = audiovisual.content;
+      document.getElementById('production').value = audiovisual.production;
+      document.getElementById('language').value = audiovisual.language;
+    }
+
+    // Get the updated audiovisual data from the form
+    function getUpdatedAudiovisualData() {
+      const updatedTitle = document.getElementById('title').value;
+      const updatedFormat = document.getElementById('format').value;
+      const updatedContent = document.getElementById('content').value;
+      const updatedProduction = document.getElementById('production').value;
+      const updatedLanguage = document.getElementById('language').value;
+
+      if (updatedTitle && updatedFormat && updatedContent) {
+        return {
+          title: updatedTitle,
+          format: updatedFormat,
+          content: updatedContent,
+          production: updatedProduction,
+          language: updatedLanguage
+        };
+      } else {
+        return null;
+      }
+    }
+
+    // Update the audiovisual using the REST API
+    async function updateAudiovisual(id, updatedAudiovisual) {
+      try {
+        await axios.put(`http://localhost:3000/audiovisuals/${id}`, updatedAudiovisual);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Navigate back to the Audiovisual List page
+    function navigateToAudiovisualList() {
+      window.location.href = 'audiovisual.html';
+    }
+  </script>
+</body>
+
+</html>

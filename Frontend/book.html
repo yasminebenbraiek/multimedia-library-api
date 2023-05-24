@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Microservice</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <a class="navbar-brand" href="#">Multimedia Library</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link active" href="book.html">Books</a>
+        <a class="nav-item nav-link" href="magazine.html">Magazines</a>
+        <a class="nav-item nav-link" href="audiovisual.html">Audiovisuals</a>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container mt-5">
+    <h1 class="mb-4">Book Microservice</h1>
+
+    <!-- Book List -->
+    <h3>Book List</h3>
+    <table id="bookTable" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Description</th>
+          <th>Language</th>
+          <th>Publisher</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="bookList">
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Create Book Form -->
+    <form id="createBookForm">
+      <h3>Create Book</h3>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" required>
+      </div>
+      <div class="form-group">
+        <label for="author">Author</label>
+        <input type="text" class="form-control" id="author" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="language">Language</label>
+        <input type="text" class="form-control" id="language">
+      </div>
+      <div class="form-group">
+        <label for="publisher">Publisher</label>
+        <input type="text" class="form-control" id="publisher">
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+
+    <hr>
+
+    <footer class="mt-5 text-center">
+      <p>&copy; 2023 SOA Project, by Yasmine Ben Braiek. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+
+  <script>
+    // Fetch and display Books on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      await fetchBooks();
+    });
+
+    // Create Book form submit event
+    document.getElementById('createBookForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const title = document.getElementById('title').value;
+      const author = document.getElementById('author').value;
+      const description = document.getElementById('description').value;
+      const language = document.getElementById('language').value;
+      const publisher = document.getElementById('publisher').value;
+
+      await createBook(title, author, description, language, publisher);
+      await fetchBooks();
+
+      // Clear form input fields
+      document.getElementById('title').value = '';
+      document.getElementById('author').value = '';
+      document.getElementById('description').value = '';
+      document.getElementById('language').value = '';
+      document.getElementById('publisher').value = '';
+    });
+
+    async function fetchBooks() {
+      try {
+        const response = await axios.get('http://localhost:3000/books');
+        const books = response.data;
+    
+        const bookTable = $('#bookTable');
+    
+        if ($.fn.DataTable.isDataTable(bookTable)) {
+          bookTable.DataTable().destroy();
+        }
+    
+        bookTable.DataTable({
+          data: books,
+          columns: [
+            { data: 'id' },
+            { data: 'title' },
+            { data: 'author' },
+            { data: 'description' },
+            { data: 'language' },
+            { data: 'publisher' },
+            {
+              data: null,
+              render: function (data, type, row) {
+                return `
+                  <button class="btn btn-sm btn-outline-info" onclick="updateBook(${data.id})">Update</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteBook(${data.id})">Delete</button>
+                `;
+              }
+            }
+          ]
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    
+  
+    // Create a new Book using the REST API
+    async function createBook(title, author, description, language, publisher) {
+      try {
+        await axios.post('http://localhost:3000/books', {
+          title: title,
+          author: author,
+          description: description,
+          language: language,
+          publisher: publisher
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Update a Book using the REST API
+    function updateBook(id) {
+      window.location.href = `updateBook.html?id=${id}`;
+    }
+
+    // Delete a Book using the REST API
+    async function deleteBook(id) {
+      try {
+        const confirmation = confirm('Are you sure you want to delete this book?');
+        if (!confirmation) {
+          return;
+        }
+        await axios.delete(`http://localhost:3000/books/${id}`);
+        await fetchBooks();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+
+</html>

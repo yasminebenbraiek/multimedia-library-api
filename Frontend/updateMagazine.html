@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magazine Microservice - Update Magazine</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <a class="navbar-brand" href="#">Multimedia Library</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="book.html">Books</a>
+        <a class="nav-item nav-link" href="magazine.html">Magazines</a>
+        <a class="nav-item nav-link" href="audiovisual.html">Audiovisuals</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h1 class="mb-4">Update Magazine</h1>
+
+    <!-- Update Magazine Form -->
+    <form id="updateMagazineForm">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" required>
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" class="form-control" id="category" required>
+      </div>
+      <div class="form-group">
+        <label for="summary">Summary</label>
+        <textarea class="form-control" id="summary" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="issue">Issue</label>
+        <input type="text" class="form-control" id="issue">
+      </div>
+      <div class="form-group">
+        <label for="publisher">Publisher</label>
+        <input type="text" class="form-control" id="publisher">
+      </div>
+      <div class="form-group">
+        <label for="language">Language</label>
+        <input type="text" class="form-control" id="language">
+      </div>
+      <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+
+    <hr>
+
+    <footer class="mt-5 text-center">
+      <p>&copy; 2023 SOA Project, by Yasmine Ben Braiek. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Fetch the magazine data and populate the update form
+    window.addEventListener('DOMContentLoaded', async () => {
+      const magazineId = getMagazineIdFromURL();
+      if (magazineId) {
+        const magazine = await fetchMagazine(magazineId);
+        if (magazine) {
+          populateUpdateForm(magazine);
+        } else {
+          alert('Magazine not found');
+          navigateToMagazineList();
+        }
+      } else {
+        alert('Invalid magazine ID');
+        navigateToMagazineList();
+      }
+    });
+
+    // Update Magazine form submit event
+    document.getElementById('updateMagazineForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const magazineId = getMagazineIdFromURL();
+      const updatedMagazine = getUpdatedMagazineData();
+      if (magazineId && updatedMagazine) {
+        await updateMagazine(magazineId, updatedMagazine);
+        navigateToMagazineList();
+      } else {
+        alert('Failed to update magazine');
+        navigateToMagazineList();
+      }
+    });
+
+    // Get the magazine ID from the URL query parameter
+    function getMagazineIdFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('id');
+    }
+
+    // Fetch the magazine data from the REST API
+    async function fetchMagazine(id) {
+      try {
+        const response = await axios.get(`http://localhost:3000/magazines/${id}`);
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+
+    // Populate the update form with magazine data
+    function populateUpdateForm(magazine) {
+      document.getElementById('title').value = magazine.title;
+      document.getElementById('category').value = magazine.category;
+      document.getElementById('summary').value = magazine.summary;
+      document.getElementById('issue').value = magazine.issue;
+      document.getElementById('publisher').value = magazine.publisher;
+      document.getElementById('language').value = magazine.language;
+    }
+
+    // Get the updated magazine data from the form
+    function getUpdatedMagazineData() {
+      const updatedTitle = document.getElementById('title').value;
+      const updatedCategory = document.getElementById('category').value;
+      const updatedSummary = document.getElementById('summary').value;
+      const updatedIssue = document.getElementById('issue').value;
+      const updatedPublisher = document.getElementById('publisher').value;
+      const updatedLanguage = document.getElementById('language').value;
+
+      if (updatedTitle && updatedCategory && updatedSummary) {
+        return {
+          title: updatedTitle,
+          category: updatedCategory,
+          summary: updatedSummary,
+          issue: updatedIssue,
+          publisher: updatedPublisher,
+          language: updatedLanguage
+        };
+      } else {
+        return null;
+      }
+    }
+
+    // Update the magazine using the REST API
+    async function updateMagazine(id, updatedMagazine) {
+      try {
+        await axios.put(`http://localhost:3000/magazines/${id}`, updatedMagazine);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Navigate back to the Magazine List page
+    function navigateToMagazineList() {
+      window.location.href = 'magazine.html';
+    }
+  </script>
+</body>
+
+</html>

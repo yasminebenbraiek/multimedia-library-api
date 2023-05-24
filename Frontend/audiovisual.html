@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audiovisual Microservice</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <a class="navbar-brand" href="#">Multimedia Library</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="book.html">Books</a>
+        <a class="nav-item nav-link" href="magazine.html">Magazines</a>
+        <a class="nav-item nav-link active" href="audiovisual.html">Audiovisuals</a>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container mt-5">
+    <h1 class="mb-4">Audiovisual Microservice</h1>
+
+    <!-- Audiovisual List -->
+    <h3>Audiovisual List</h3>
+    <table id="audiovisualTable" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Format</th>
+          <th>Content</th>
+          <th>Production</th>
+          <th>Language</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="audiovisualList">
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Create Audiovisual Form -->
+    <form id="createAudiovisualForm">
+      <h3>Create Audiovisual</h3>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" required>
+      </div>
+      <div class="form-group">
+        <label for="format">Format</label>
+        <input type="text" class="form-control" id="format" required>
+      </div>
+      <div class="form-group">
+        <label for="content">Content</label>
+        <textarea class="form-control" id="content" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="production">Production</label>
+        <input type="text" class="form-control" id="production">
+      </div>
+      <div class="form-group">
+        <label for="language">Language</label>
+        <input type="text" class="form-control" id="language">
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+
+    <hr>
+
+    <footer class="mt-5 text-center">
+      <p>&copy; 2023 SOA Project, by Yasmine Ben Braiek. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+
+  <script>
+    // Fetch and display Audiovisuals on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      await fetchAudiovisuals();
+    });
+
+    // Create Audiovisual form submit event
+    document.getElementById('createAudiovisualForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const title = document.getElementById('title').value;
+      const format = document.getElementById('format').value;
+      const content = document.getElementById('content').value;
+      const production = document.getElementById('production').value;
+      const language = document.getElementById('language').value;
+
+      await createAudiovisual(title, format, content, production, language);
+      await fetchAudiovisuals();
+
+      // Clear form input fields
+      document.getElementById('title').value = '';
+      document.getElementById('format').value = '';
+      document.getElementById('content').value = '';
+      document.getElementById('production').value = '';
+      document.getElementById('language').value = '';
+    });
+
+    async function fetchAudiovisuals() {
+      try {
+        const response = await axios.get('http://localhost:3000/audiovisuals');
+        const audiovisuals = response.data;
+    
+        const audiovisualTable = $('#audiovisualTable');
+    
+        if ($.fn.DataTable.isDataTable(audiovisualTable)) {
+          audiovisualTable.DataTable().destroy();
+        }
+    
+        audiovisualTable.DataTable({
+          data: audiovisuals,
+          columns: [
+            { data: 'id' },
+            { data: 'title' },
+            { data: 'format' },
+            { data: 'content' },
+            { data: 'production' },
+            { data: 'language' },
+            {
+              data: null,
+              render: function (data, type, row) {
+                return `
+                  <button class="btn btn-sm btn-outline-info" onclick="updateAudiovisual(${data.id})">Update</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteAudiovisual(${data.id})">Delete</button>
+                `;
+              }
+            }
+          ]
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    
+  
+    // Create a new Audiovisual using the REST API
+    async function createAudiovisual(title, format, content, production, language) {
+      try {
+        await axios.post('http://localhost:3000/audiovisuals', {
+          title: title,
+          format: format,
+          content: content,
+          production: production,
+          language: language
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Update an Audiovisual using the REST API
+    function updateAudiovisual(id) {
+      window.location.href = `updateAudiovisual.html?id=${id}`;
+    }
+
+    // Delete an Audiovisual using the REST API
+    async function deleteAudiovisual(id) {
+      try {
+        const confirmation = confirm('Are you sure you want to delete this audiovisual?');
+        if (!confirmation) {
+          return;
+        }
+        await axios.delete(`http://localhost:3000/audiovisuals/${id}`);
+        await fetchAudiovisuals();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+
+</html>
